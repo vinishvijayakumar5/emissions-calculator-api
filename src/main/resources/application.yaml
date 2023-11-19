@@ -1,0 +1,50 @@
+server:
+  port: 8090
+
+application:
+  version: @project.version@
+
+spring:
+  application:
+    name: @project.artifactId@
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    clearCheckSums: true
+  datasource:
+    url: jdbc:h2:mem:ec
+    username: root
+    password: password
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+  h2:
+    console:
+      enabled: true
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /api-ui.html
+    operationsSorter: method
+
+security:
+  jwt:
+    token:
+      secret-key: PRzH37bm7LzuCAhyT4caZcS3gFc359swmAR5RNg3rEGx6Mu47gJaWaPsy3jHtJgPC8F33NyPqjR8xFndRqU93ugFShf7h2FGVnxmYxTmEdc9MhZ6jGSZuLMLPU4wwcPbdZsLUPc5sTK5F8d7rcGxt7DmpnSNdXyZrvwW8dZdSRVMwnEsRnU5PHEd6h5hd6XZPDpqFU24t6YrA8EDXSPWePLZRX7pyFy7VQUvLZtZEe2NKhXkWKMcxdcQKaRRdBCJ
+
+emissions:
+  factor:
+    rail: 0.1
+    train: 0.1
+    car: 0.2
+    bus: 0.05
+    air: 0.15
+    bike: 0.2
+    bicycle: 0.0
+    electric-bicycle: 0.0
+    electric-scooter: 0.0
+    walking: 0.0
