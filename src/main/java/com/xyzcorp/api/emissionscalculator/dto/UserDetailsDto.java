@@ -27,7 +27,7 @@ public class UserDetailsDto implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(nonNull(roles)) {
             return roles.stream()
-                    .map(role-> new SimpleGrantedAuthority("ROLE_"+role))
+                    .map(role-> new SimpleGrantedAuthority(role))
                     .collect(Collectors.toUnmodifiableList());
         }
         return new ArrayList<>();
