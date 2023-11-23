@@ -6,7 +6,6 @@ import com.xyzcorp.api.emissionscalculator.dto.VehicleAlternative;
 import com.xyzcorp.api.emissionscalculator.exception.DataNotFoundException;
 import com.xyzcorp.api.emissionscalculator.testdata.TestCompanyDataManager;
 import com.xyzcorp.api.emissionscalculator.utils.VehicleEmissionCalculator;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -84,8 +84,8 @@ class EmissionServiceTest implements TestCompanyDataManager {
         DataNotFoundException dataNotFoundException = assertThrows(DataNotFoundException.class,
                 () -> emissionService.get(EXISTING_COMPANY_ID, employeeEmissionDto().getEmployeeId()));
 
-        assertEquals(String.format("No emissions data found for the employee id %s", employeeEmissionDto().getEmployeeId())
-                , dataNotFoundException.getMessage());
+        assertEquals(String.format("No emissions data found for the employee id %s", employeeEmissionDto().getEmployeeId()),
+                dataNotFoundException.getMessage());
         assertEquals("E106", dataNotFoundException.getContract());
         assertEquals(HttpStatus.NOT_FOUND, dataNotFoundException.getStatus());
     }
@@ -110,7 +110,7 @@ class EmissionServiceTest implements TestCompanyDataManager {
         assertEquals(vehicleAlternative().getMileage(), result.get(0).getMileage());
         assertNotNull(result.get(0).getAlternatives());
         assertEquals(vehicleAlternative().getAlternatives().size(), result.get(0).getAlternatives().size());
-        Assertions.assertLinesMatch(vehicleAlternative().getAlternatives(), result.get(0).getAlternatives());
+        assertTrue(vehicleAlternative().getAlternatives().stream().allMatch(a -> result.get(0).getAlternatives().contains(a)));
     }
 
     @Test
@@ -120,8 +120,8 @@ class EmissionServiceTest implements TestCompanyDataManager {
         DataNotFoundException dataNotFoundException = assertThrows(DataNotFoundException.class,
                 () -> emissionService.getAlternatives(EXISTING_COMPANY_ID, employeeEmissionDto().getEmployeeId()));
 
-        assertEquals(String.format("No emissions data found for the employee id %s", employeeEmissionDto().getEmployeeId())
-                , dataNotFoundException.getMessage());
+        assertEquals(String.format("No emissions data found for the employee id %s", employeeEmissionDto().getEmployeeId()),
+                dataNotFoundException.getMessage());
         assertEquals("E106", dataNotFoundException.getContract());
         assertEquals(HttpStatus.NOT_FOUND, dataNotFoundException.getStatus());
     }
