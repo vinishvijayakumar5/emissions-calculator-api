@@ -30,6 +30,8 @@ springdoc:
   swagger-ui:
     path: /api-ui.html
     operationsSorter: method
+    persistAuthorization: true
+  enable-spring-security: true
 
 security:
   jwt:
