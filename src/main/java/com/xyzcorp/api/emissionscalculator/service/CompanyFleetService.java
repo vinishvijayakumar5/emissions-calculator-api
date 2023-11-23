@@ -45,7 +45,7 @@ public class CompanyFleetService {
     private final BiFunction<Long, MultipartFile, Company> ACCEPTANCE = ((companyId, file) -> {
         Company company = companyService.getCompany(companyId);
         if(isNull(company) || isNull(file)) {
-            throw new InvalidRequestException("Invalid file.", "E102", HttpStatus.BAD_REQUEST);
+            throw new InvalidRequestException("Invalid request, either company or file not found.", "E102", HttpStatus.BAD_REQUEST);
         }
         return company;
     });
@@ -54,12 +54,16 @@ public class CompanyFleetService {
     public ResponseEntity persist(long companyId, MultipartFile multipartFile) {
         // verify company id and file
         Company company = ACCEPTANCE.apply(companyId, multipartFile);
-        // parse file
-        List<CompanyFleetDto> fleets = fleetFileOperations.parse(multipartFile);
-        // persist
-        companyFleetRepository.saveAll(companyFleetMapper.map(fleets, company));
+
+        // parse file and persist
+        persist(company, fleetFileOperations.parse(multipartFile));
 
         return ResponseEntity.ok(getSuccessResponse());
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void persist(Company company, List<CompanyFleetDto> fleets) {
+        companyFleetRepository.saveAll(companyFleetMapper.map(fleets, company));
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)

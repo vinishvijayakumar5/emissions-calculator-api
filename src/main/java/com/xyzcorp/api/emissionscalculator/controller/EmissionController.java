@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/private/v1/emission/company/{companyId}")
+@RequestMapping(value = "/api/private/v1/company/{companyId}/emission")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class EmissionController {
 

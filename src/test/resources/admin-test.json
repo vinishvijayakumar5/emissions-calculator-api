@@ -1,0 +1,6 @@
+{
+  "name" : "Super Administrator",
+  "emailAddress" : "admin_test@xyz.corp",
+  "password": "Welcome@123",
+  "role": "ROLE_ADMIN"
+}

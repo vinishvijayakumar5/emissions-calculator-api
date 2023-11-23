@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: create tables
+      author: Vinish Vijayakumar
+      changes:
+        - sqlFile:
+            path: db/changelog/scripts/01-create-tables-test.sql
+            splitStatements: true
+            stripComments: true
+        - sqlFile:
+            path: db/changelog/scripts/02-create-sequence-test.sql
+            splitStatements: true
+            stripComments: true
+        - sqlFile:
+            path: db/changelog/scripts/03-setup-data-test.sql
+            splitStatements: true
+            stripComments: true

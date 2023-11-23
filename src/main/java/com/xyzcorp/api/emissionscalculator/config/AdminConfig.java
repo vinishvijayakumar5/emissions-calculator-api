@@ -5,6 +5,7 @@ import com.xyzcorp.api.emissionscalculator.dto.UserDto;
 import com.xyzcorp.api.emissionscalculator.service.UserPublicService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -18,7 +19,8 @@ import java.util.Objects;
 @Slf4j
 public class AdminConfig {
 
-    private static final String FILE_LOC = "classpath:admin.json";
+    @Value("${user.profile.default}")
+    private String fileLoc;
 
     @Autowired
     private UserPublicService userPublicService;
@@ -43,6 +45,6 @@ public class AdminConfig {
     }
 
     private Resource getResource() {
-        return resourceLoader.getResource(FILE_LOC);
+        return resourceLoader.getResource(fileLoc);
     }
 }

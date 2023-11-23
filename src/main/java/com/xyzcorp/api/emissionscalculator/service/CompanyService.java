@@ -50,10 +50,6 @@ public class CompanyService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public boolean isExists(long id) {
-        return nonNull(get(id));
-    }
-
     public boolean isNameExists(CompanyDto dto) {
         return nonNull(companyRepository.findByName(dto.getName()));
     }
