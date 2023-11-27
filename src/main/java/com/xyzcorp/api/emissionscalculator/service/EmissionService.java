@@ -9,6 +9,8 @@ import com.xyzcorp.api.emissionscalculator.utils.VehicleEmissionCalculator;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ public class EmissionService {
     private VehicleEmissionCalculator vehicleEmissionCalculator;
     private ObjectMapper objectMapper;
 
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public List<EmployeeEmissionDto> get(String companyId) {
         List<CompanyFleetDto> fleets = companyFleetService.get(Long.valueOf(companyId));
         if(isNotEmpty(fleets)) {
@@ -35,6 +38,7 @@ public class EmissionService {
         throw new DataNotFoundException("No emissions data found for the company.", "E107", HttpStatus.NOT_FOUND);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public List<EmployeeEmissionDto> get(String companyId, String employeeId) {
         List<CompanyFleetDto> fleets = companyFleetService.get(Long.valueOf(companyId), employeeId);
         if(isNotEmpty(fleets)) {
@@ -47,6 +51,7 @@ public class EmissionService {
                 "E106", HttpStatus.NOT_FOUND);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public List<VehicleAlternative> getAlternatives(String companyId, String employeeId) {
         List<EmployeeEmissionDto> emissions = get(companyId, employeeId);
         return emissions.stream()

@@ -16,6 +16,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -34,6 +36,7 @@ public class UserPublicService {
     private JwtTokenProvider jwtTokenProvider;
     private PasswordEncoder passwordEncoder;
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public ResponseEntity register(UserDto dto) {
         if(isNull(userRepository.findByEmailAddress(dto.getEmailAddress()))) {
             User user = userRepository.save(User.builder()
@@ -48,13 +51,14 @@ public class UserPublicService {
         throw new UserExistsException("User email address already exists", "E108", HttpStatus.BAD_REQUEST);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public UserAuthResponseDto authenticate(UserAuthRequestDto requestDto) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(requestDto.getEmailAddress().trim(),
                             requestDto.getPassword().trim()));
 
-            return generateAuthResponse(requestDto.getEmailAddress().trim());
+            return generateAuthResponse(userRepository.findByEmailAddress(requestDto.getEmailAddress().trim()));
 
         } catch (Exception e) {
             log.error(format("User %s has been ***failed*** to authenticate. Error [%s]", requestDto.getEmailAddress(), e.getMessage()));
@@ -63,12 +67,11 @@ public class UserPublicService {
         throw new AuthenticationFailedException("Authentication failed", "E109", HttpStatus.BAD_REQUEST);
     }
 
-    private UserAuthResponseDto generateAuthResponse(String emailAddress) {
-        User user = userRepository.findByEmailAddress(emailAddress);
+    private UserAuthResponseDto generateAuthResponse(User user) {
         return UserAuthResponseDto.builder()
-                .emailAddress(emailAddress)
+                .emailAddress(user.getEmailAddress())
                 .name(user.getName())
-                .token(jwtTokenProvider.createToken(user.getName(), emailAddress))
+                .token(jwtTokenProvider.createToken(user.getName(), user.getEmailAddress()))
                 .build();
     }
 }
