@@ -13,7 +13,6 @@ import org.springframework.core.io.ResourceLoader;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 
 @Configuration
 @Slf4j
@@ -31,16 +30,10 @@ public class AdminConfig {
 
     @Bean
     public void register() throws IOException {
-        InputStream inputStream = null;
-        try {
-            inputStream = getResource().getInputStream();
+        try(InputStream inputStream = getResource().getInputStream()) {
             userPublicService.register(objectMapper.readValue(inputStream, UserDto.class));
         } catch (Exception e) {
             log.error("Error occurred while registering default admin user.", e);
-        } finally {
-            if(Objects.nonNull(inputStream)) {
-                inputStream.close();
-            }
         }
     }
 

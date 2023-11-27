@@ -28,8 +28,8 @@ public class FleetFileOperations {
     public List<CompanyFleetDto> parse(MultipartFile file) {
         List<CompanyFleetDto> fleets = new ArrayList<>();
 
-        try {
-            Workbook workbook = new XSSFWorkbook(file.getInputStream());
+        try(Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
+
             Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> itr = sheet.iterator();
             while (itr.hasNext()) {
